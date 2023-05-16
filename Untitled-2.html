@@ -1,12 +1,46 @@
 <head>
-
+    <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    td, th {
+      border: 1px dotted green;
+      padding: 8px;
+      text-align: left;
+    }
+    </style>
 </head>
 <body>
     <div id="input-container">
-        <input type="text" id="nrow"><input type="text" id="ncol">
+        <label for="input-container">Inserisci la dimensione della mappa:</label> 
+        <input type="text" id="nrow">
+        <input type="text" id="ncol">
     </div>
-    <label for="input-container">Inserisci la dimensione della mappa:</label>
-    <table>
-
+    
+    <table id = "table">
     </table>
+    <input type="button" id="createbutton" value="Create Map!">
+
+    <script>
+        const createTable = () => {
+            const nrow = parseInt(document.getElementById("nrow").value);
+            const ncol = parseInt(document.getElementById("ncol").value);
+            for (let i = 0; i < nrow; i++){
+                var row = document.createElement("tr");
+                for(let j = 0; j < ncol; j++){
+                    var cell = document.createElement("td");
+                    cell.textContent = "-";
+                    row.appendChild(cell);
+                }
+                table.appendChild(row)
+            }
+        }
+
+        const lunchButton = document.querySelector("#createbutton");
+        const table = document.querySelector("#table");
+        lunchButton.addEventListener("click", () => createTable())
+
+
+    </script>
 </body>
