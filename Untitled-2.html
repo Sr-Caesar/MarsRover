@@ -23,24 +23,34 @@
     <input type="button" id="createbutton" value="Create Map!">
 
     <script>
+
         const createTable = () => {
             const nrow = parseInt(document.getElementById("nrow").value);
             const ncol = parseInt(document.getElementById("ncol").value);
+            const x = Math.floor(Math.random() * (nrow -1)+1);
+            const y = Math.floor(Math.random() * (ncol -1)+1);
             for (let i = 0; i < nrow; i++){
                 var row = document.createElement("tr");
                 for(let j = 0; j < ncol; j++){
                     var cell = document.createElement("td");
-                    cell.textContent = "-";
+                    if (x === i && y === j) {
+                        cell.textContent = String.fromCodePoint(0x1F680); // Codice Unicode per l'emoji dell'astronave
+                    } else {
+                        cell.textContent = "-";
+                    }
                     row.appendChild(cell);
                 }
                 table.appendChild(row)
             }
+            lunchButton.remove()
+            var btnClear = document.createElement("button");
+            btnClear.textContent = "Clear Page!"
+            btnClear.addEventListener("click", () => {location.reload();})
+            document.body.appendChild(btnClear);
         }
 
         const lunchButton = document.querySelector("#createbutton");
         const table = document.querySelector("#table");
         lunchButton.addEventListener("click", () => createTable())
-
-
     </script>
 </body>
