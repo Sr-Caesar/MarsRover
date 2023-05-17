@@ -24,11 +24,13 @@
     
     <table id = "table">
     </table>
+    <p><strong><em>SCORE: </em></strong></p><p id = "score"><strong><em></em></strong></p>
     <input type="button" id="createbutton" value="Create Map!">
 
     <script>
         let x,y;
         let nrow, ncol;
+        let coinCells = [];
         const createTable = () => {
             nrow = parseInt(document.getElementById("nrow").value);
             ncol = parseInt(document.getElementById("ncol").value);
@@ -71,15 +73,30 @@
             const cell = document.getElementById(`cell-${x}-${y}`);
             cell.textContent = String.fromCodePoint(0x1F680);
         }
-
+        const spawnCoin = () => {
+            let blindX = x;
+            let blindY = y;
+            const coins = Math.floor(Math.random() * (nrow -1)+1);
+            let coinX, coinY;
+            for(let i = 0; i <coins; i++){
+                coinX = Math.floor(Math.random() * (nrow -1)+1);
+                coinY = Math.floor(Math.random() * (ncol -1)+1);
+                if(!(coinX==blindX && coinY == blindY)){
+                    const cell = document.getElementById(`cell-${coinX}-${coinY}`);
+                    coinCells.push(`cell-${coinX}-${coinY}`);
+                    cell.textContent = "\u{1F4B0}";
+                }
+            }
+        }
         document.getElementById("nrow").value = "5";
         document.getElementById("ncol").value = "5";
         const lunchButton = document.querySelector("#createbutton");
         const table = document.querySelector("#table");
+        const scores = document.querySelector("#score")
         lunchButton.addEventListener("click", () => {
             createTable();
             spawnSpaceShips();
-
+            spawnCoin();
         });
         document.addEventListener("keydown", function(event) {
         if (event.key === "ArrowLeft") {
@@ -122,9 +139,10 @@
         nextCell.textContent = String.fromCodePoint(0x1F680);
     });
         
-    const spawnCoin = () => {
-            const coins = Math.floor(Math.random() * (nrow -1)+1);
-            console.log(coins);
+        if(coinCells.includes(`cell-${x}-${y}`)){
+            let currentScore = 0;
+            currentScore++;
+            scoreElement.textContent = currentScore;
         }
     </script>
 </body>
