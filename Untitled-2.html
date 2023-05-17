@@ -1,0 +1,148 @@
+<head>
+    <style>
+    table {
+        border-collapse: collapse;
+        width: 80%; 
+        margin: 20px;
+        padding: 10px;
+    }   
+    td, th {
+      border: 2px dotted green;
+      padding: 8px;
+      width: 50px; /* Imposta la larghezza desiderata */
+      height: 50px; /* Imposta l'altezza desiderata */
+      text-align: center;
+    }
+    </style>
+</head>
+<body>
+    <div id="input-container">
+        <label for="input-container">Inserisci la dimensione della mappa:</label> 
+        <input type="text" id="nrow">
+        <input type="text" id="ncol">
+    </div>
+    
+    <table id = "table">
+    </table>
+    <p><strong><em>SCORE: </em></strong></p><p id = "score"><strong><em></em></strong></p>
+    <input type="button" id="createbutton" value="Create Map!">
+
+    <script>
+        let x,y;
+        let nrow, ncol;
+        let coinCells = [];
+        const createTable = () => {
+            nrow = parseInt(document.getElementById("nrow").value);
+            ncol = parseInt(document.getElementById("ncol").value);
+            if(nrow > 0 && ncol > 0){
+                for (let i = 0; i < nrow; i++){
+                    var row = document.createElement("tr");
+                    for(let j = 0; j < ncol; j++){
+                        var cell = document.createElement("td");
+                        cell.textContent = "-";
+                        cell.id = `cell-${i}-${j}`;
+                        row.appendChild(cell);
+                    }
+                    table.appendChild(row)
+                }
+                lunchButton.remove()
+                var btnClear = document.createElement("button");
+                btnClear.textContent = "Clear Page!"
+                btnClear.addEventListener("click", () => {location.reload();})
+                document.body.appendChild(btnClear);
+            }
+            else
+            {
+                let p = document.createElement("p");
+                p.textContent = "Devi immettere dei valori per creare la mappa!";
+                document.body.appendChild(p);
+                p.style.color = "red";
+                p.style.fontWeight = "bold";
+                p.style.fontSize = "16px";
+
+                lunchButton.remove()
+                var btnClear = document.createElement("button");
+                btnClear.textContent = "Clear Page!"
+                btnClear.addEventListener("click", () => {location.reload();})
+                document.body.appendChild(btnClear);
+            }
+        }
+        const spawnSpaceShips = () => {
+            x = Math.floor(Math.random() * (nrow -1)+1);
+            y = Math.floor(Math.random() * (ncol -1)+1);
+            const cell = document.getElementById(`cell-${x}-${y}`);
+            cell.textContent = String.fromCodePoint(0x1F680);
+        }
+        const spawnCoin = () => {
+            let blindX = x;
+            let blindY = y;
+            const coins = Math.floor(Math.random() * (nrow -1)+1);
+            let coinX, coinY;
+            for(let i = 0; i <coins; i++){
+                coinX = Math.floor(Math.random() * (nrow -1)+1);
+                coinY = Math.floor(Math.random() * (ncol -1)+1);
+                if(!(coinX==blindX && coinY == blindY)){
+                    const cell = document.getElementById(`cell-${coinX}-${coinY}`);
+                    coinCells.push(`cell-${coinX}-${coinY}`);
+                    cell.textContent = "\u{1F4B0}";
+                }
+            }
+        }
+        document.getElementById("nrow").value = "5";
+        document.getElementById("ncol").value = "5";
+        const lunchButton = document.querySelector("#createbutton");
+        const table = document.querySelector("#table");
+        const scores = document.querySelector("#score")
+        lunchButton.addEventListener("click", () => {
+            createTable();
+            spawnSpaceShips();
+            spawnCoin();
+        });
+        document.addEventListener("keydown", function(event) {
+        if (event.key === "ArrowLeft") {
+            const currentCell = document.getElementById(`cell-${x}-${y}`);
+            currentCell.textContent = "-";  
+            const nextCell = document.getElementById(`cell-${x}-${y-1}`);
+            nextCell.textContent = String.fromCodePoint(0x1F680);
+        } else if (event.key === "ArrowRight") {
+            const currentCell = document.getElementById(`cell-${x}-${y}`);
+            currentCell.textContent = "-";
+            const nextCell = document.getElementById(`cell-${x}-${y+1}`);
+            nextCell.textContent = String.fromCodePoint(0x1F680);
+        } else if (event.key === "ArrowUp") {
+            const currentCell = document.getElementById(`cell-${x}-${y}`);
+            currentCell.textContent = "-";
+            const nextCell = document.getElementById(`cell-${x-1}-${y}`);
+            nextCell.textContent = String.fromCodePoint(0x1F680);
+        } else if (event.key === "ArrowDown") {
+            const currentCell = document.getElementById(`cell-${x}-${y}`);
+            currentCell.textContent = "-";
+            const nextCell = document.getElementById(`cell-${x+1}-${y}`);
+            nextCell.textContent = String.fromCodePoint(0x1F680);
+        }
+        });
+        document.addEventListener("keydown", function(event) {
+        const currentCell = document.getElementById(`cell-${x}-${y}`);
+        currentCell.textContent = "-";
+
+        if (event.key === "ArrowLeft") {
+            y = (y - 1 + ncol) % ncol;
+        } else if (event.key === "ArrowRight") {
+            y = (y + 1) % ncol;
+        } else if (event.key === "ArrowUp") {
+            x = (x - 1 + nrow) % nrow;
+        } else if (event.key === "ArrowDown") {
+            x = (x + 1) % nrow;
+        }
+
+        const nextCell = document.getElementById(`cell-${x}-${y}`);
+        nextCell.textContent = String.fromCodePoint(0x1F680);
+    });
+        
+        if(coinCells.includes(`cell-${x}-${y}`)){
+            let currentScore = 0;
+            currentScore++;
+            scoreElement.textContent = currentScore;
+        }
+    </script>
+</body>
