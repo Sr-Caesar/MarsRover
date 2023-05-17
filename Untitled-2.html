@@ -1,13 +1,17 @@
 <head>
     <style>
     table {
-      border-collapse: collapse;
-      width: 100%;
-    }
+        border-collapse: collapse;
+        width: 80%; 
+        margin: 20px;
+        padding: 10px;
+    }   
     td, th {
-      border: 1px dotted green;
+      border: 2px dotted green;
       padding: 8px;
-      text-align: left;
+      width: 50px; /* Imposta la larghezza desiderata */
+      height: 50px; /* Imposta l'altezza desiderata */
+      text-align: center;
     }
     </style>
 </head>
@@ -23,34 +27,104 @@
     <input type="button" id="createbutton" value="Create Map!">
 
     <script>
-
+        let x,y;
+        let nrow, ncol;
         const createTable = () => {
-            const nrow = parseInt(document.getElementById("nrow").value);
-            const ncol = parseInt(document.getElementById("ncol").value);
-            const x = Math.floor(Math.random() * (nrow -1)+1);
-            const y = Math.floor(Math.random() * (ncol -1)+1);
-            for (let i = 0; i < nrow; i++){
-                var row = document.createElement("tr");
-                for(let j = 0; j < ncol; j++){
-                    var cell = document.createElement("td");
-                    if (x === i && y === j) {
-                        cell.textContent = String.fromCodePoint(0x1F680); // Codice Unicode per l'emoji dell'astronave
-                    } else {
+            nrow = parseInt(document.getElementById("nrow").value);
+            ncol = parseInt(document.getElementById("ncol").value);
+            if(nrow > 0 && ncol > 0){
+                for (let i = 0; i < nrow; i++){
+                    var row = document.createElement("tr");
+                    for(let j = 0; j < ncol; j++){
+                        var cell = document.createElement("td");
                         cell.textContent = "-";
+                        cell.id = `cell-${i}-${j}`;
+                        row.appendChild(cell);
                     }
-                    row.appendChild(cell);
+                    table.appendChild(row)
                 }
-                table.appendChild(row)
+                lunchButton.remove()
+                var btnClear = document.createElement("button");
+                btnClear.textContent = "Clear Page!"
+                btnClear.addEventListener("click", () => {location.reload();})
+                document.body.appendChild(btnClear);
             }
-            lunchButton.remove()
-            var btnClear = document.createElement("button");
-            btnClear.textContent = "Clear Page!"
-            btnClear.addEventListener("click", () => {location.reload();})
-            document.body.appendChild(btnClear);
+            else
+            {
+                let p = document.createElement("p");
+                p.textContent = "Devi immettere dei valori per creare la mappa!";
+                document.body.appendChild(p);
+                p.style.color = "red";
+                p.style.fontWeight = "bold";
+                p.style.fontSize = "16px";
+
+                lunchButton.remove()
+                var btnClear = document.createElement("button");
+                btnClear.textContent = "Clear Page!"
+                btnClear.addEventListener("click", () => {location.reload();})
+                document.body.appendChild(btnClear);
+            }
+        }
+        const spawnSpaceShips = () => {
+            x = Math.floor(Math.random() * (nrow -1)+1);
+            y = Math.floor(Math.random() * (ncol -1)+1);
+            const cell = document.getElementById(`cell-${x}-${y}`);
+            cell.textContent = String.fromCodePoint(0x1F680);
         }
 
+        document.getElementById("nrow").value = "5";
+        document.getElementById("ncol").value = "5";
         const lunchButton = document.querySelector("#createbutton");
         const table = document.querySelector("#table");
-        lunchButton.addEventListener("click", () => createTable())
+        lunchButton.addEventListener("click", () => {
+            createTable();
+            spawnSpaceShips();
+
+        });
+        document.addEventListener("keydown", function(event) {
+        if (event.key === "ArrowLeft") {
+            const currentCell = document.getElementById(`cell-${x}-${y}`);
+            currentCell.textContent = "-";  
+            const nextCell = document.getElementById(`cell-${x}-${y-1}`);
+            nextCell.textContent = String.fromCodePoint(0x1F680);
+        } else if (event.key === "ArrowRight") {
+            const currentCell = document.getElementById(`cell-${x}-${y}`);
+            currentCell.textContent = "-";
+            const nextCell = document.getElementById(`cell-${x}-${y+1}`);
+            nextCell.textContent = String.fromCodePoint(0x1F680);
+        } else if (event.key === "ArrowUp") {
+            const currentCell = document.getElementById(`cell-${x}-${y}`);
+            currentCell.textContent = "-";
+            const nextCell = document.getElementById(`cell-${x-1}-${y}`);
+            nextCell.textContent = String.fromCodePoint(0x1F680);
+        } else if (event.key === "ArrowDown") {
+            const currentCell = document.getElementById(`cell-${x}-${y}`);
+            currentCell.textContent = "-";
+            const nextCell = document.getElementById(`cell-${x+1}-${y}`);
+            nextCell.textContent = String.fromCodePoint(0x1F680);
+        }
+        });
+        document.addEventListener("keydown", function(event) {
+        const currentCell = document.getElementById(`cell-${x}-${y}`);
+        currentCell.textContent = "-";
+
+        if (event.key === "ArrowLeft") {
+            y = (y - 1 + ncol) % ncol;
+        } else if (event.key === "ArrowRight") {
+            y = (y + 1) % ncol;
+        } else if (event.key === "ArrowUp") {
+            x = (x - 1 + nrow) % nrow;
+        } else if (event.key === "ArrowDown") {
+            x = (x + 1) % nrow;
+        }
+
+        const nextCell = document.getElementById(`cell-${x}-${y}`);
+        nextCell.textContent = String.fromCodePoint(0x1F680);
+    });
+        
+    const spawnCoin = () => {
+            const coins = Math.floor(Math.random() * (nrow -1)+1);
+            console.log(coins);
+        }
     </script>
 </body>
